@@ -31,7 +31,8 @@
             <!-- <label for="password">Password: </label> -->
             <input type="password" id="password" placeholder="password" required>
         </div>
-        <button type="submit">Sign Up</button>
+        <button style="background-color: #337af4;" type="submit">Sign Up</button>
+        <button style="background-color: #cacdd1;" type="submit"><a href="signin.html"> Sign In </a></button>
         </form>
         <p id="exist"></p>
     </div>
@@ -64,6 +65,7 @@
 
                 const result = await axios.post("http://localhost:3000/user/addUser",myObj);
                 console.log(result.data);
+                window.location.href = "./signin.html";
 
             }
             catch(err){

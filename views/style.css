@@ -45,19 +45,26 @@ form input,button{
 }
 
 form button{
-    width:250px;
+    width:100px;
     background-color: #337af4;
     letter-spacing: 1px;
     font-weight: bold;
     border-radius: 15px;
 }
 
+a{
+    text-decoration: none;
+}
+a:hover{
+    color: azure;
+}
 
 form button:hover{
     box-shadow: 2px 2px 2px 1px;
     cursor: pointer;
-    background-color:cornflowerblue;
     color: azure;
+    background-color:cornflowerblue;
+    
 }
 
 
