@@ -31,5 +31,39 @@
         </form>
         <p id="exist"></p>
     </div>
+
+    <!-- ------------------------------ JavaScript ------------------------- -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.0/axios.min.js"></script>
+    <script>
+        var form = document.getElementById('signin');
+        form.addEventListener('submit',checkUser);
+
+        async function checkUser(e){
+            try{
+                e.preventDefault();
+
+                let Email = document.getElementById('email').value;
+                let Password = document.getElementById('password').value;
+
+                document.getElementById('email').value = "";
+                document.getElementById('password').value = "";
+
+                let Obj = {
+                    email: Email,
+                    password: Password
+                }
+
+                const result = await axios.post("http://localhost:3000/user/checkUser",Obj);
+                console.log(result.data.message);
+                document.body.innerHTML = document.body.innerHTML + result.data.message;
+
+            }
+            catch(err){
+                console.log(err);
+                document.body.innerHTML = document.body.innerHTML + err.response.data.message;
+            }
+        }
+
+    </script>
 </body>
 </html>
