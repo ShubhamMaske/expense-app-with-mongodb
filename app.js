@@ -7,6 +7,9 @@ const cors = require('cors');
 const userRoutes = require('./routes/userroutes');
 const expenseRoute = require('./routes/expenseroutes');
 
+const User = require('./models/users');
+const Expense = require('./models/expense');
+
 const db = require('./utils/database');
 
 
@@ -17,6 +20,9 @@ app.use(bodyParser.json({ extended: false }));
 
 app.use('/user', userRoutes);
 app.use('/expense',expenseRoute);
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 db.sync()
     .then(result => {

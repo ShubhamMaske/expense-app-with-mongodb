@@ -49,7 +49,8 @@
 
         window.addEventListener("DOMContentLoaded",async() => {
           try{
-            const expense =await axios.get("http://localhost:3000/expense/getExpenses")
+            const token = localStorage.getItem('token');
+            const expense =await axios.get("http://localhost:3000/expense/getExpenses",{headers: {"Authorization":token} })
             for(var i = 0;i<expense.data.allExpense.length;i++){
                 showData(expense.data.allExpense[i]);
             }
@@ -76,8 +77,8 @@
                 Des : Description,
                 cat:category
             };
-
-            const resp = await axios.post("http://localhost:3000/expense/addExpense",myObj)
+            const token = localStorage.getItem('token');
+            const resp = await axios.post("http://localhost:3000/expense/addExpense",myObj,{headers: {"Authorization":token} })
                 showData(resp.data.newExpense);
             }
             catch(err) {

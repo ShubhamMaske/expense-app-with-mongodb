@@ -55,6 +55,8 @@
 
                 const result = await axios.post("http://localhost:3000/user/checkUser",Obj);
                 console.log(result.data.message);
+                console.log(result.data.token);
+                localStorage.setItem('token',result.data.token);
                 document.body.innerHTML = document.body.innerHTML + result.data.message;
                 window.location.href = "./expense.html";
 
