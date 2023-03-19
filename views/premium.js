@@ -16,13 +16,16 @@ document.getElementById('premiumbtn').onclick = async function(e) {
         "order_id": response.data.order.id, //for one time payment
         "handler": async function (response){
             console.log("response>>>",response)
-            await axios.post("http://localhost:3000/purchase/updatestatus",{
+            const updatedUser = await axios.post("http://localhost:3000/purchase/updatestatus",{
             order_id: options.order_id,
             payment_id: response.razorpay_payment_id
         },{headers: {"Authorization":token} })
 
+        localStorage.setItem('token',updatedUser.data.token);
         alert('You are a Premium User Now')
         document.getElementById('premiumbtn').style.display = 'none';
+        document.getElementById('premiumuser').innerHTML = "You are Premium user now";
+        showLeaderboard();
         },
     };
 

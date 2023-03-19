@@ -1,6 +1,8 @@
 const Razorpay = require('razorpay');
 
 const Order = require('../models/order');
+const User = require('../models/users');
+const jwt = require('jsonwebtoken');
 
 exports.purchasepremium = async (req, res) => {
     try{
@@ -28,6 +30,10 @@ exports.purchasepremium = async (req, res) => {
     
 }
 
+function updateToken(id,name,ispremiumuser){
+    return jwt.sign({userId : id, name:name,ispremiumuser},'8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb');
+}
+
 exports.updateTransactionStatus = async (req, res) => {
     try{
         const {payment_id, order_id} = req.body;
@@ -35,8 +41,10 @@ exports.updateTransactionStatus = async (req, res) => {
         const promise1 = order.update({paymentid:payment_id, status:'SUCCESSFUL'})
         const promise2 = req.user.update({ispremiumuser: true})
 
+        let user = await User.findAll({where: {id:order.userId}})
+
         Promise.all([promise1,promise2]).then(() => {
-            return res.status(202).json({success: true,message:"Transaction Successful"});
+            return res.status(202).json({success: true,message:"Transaction Successful",token: updateToken(user[0].id,user[0].name,user[0].ispremiumuser)});
         }).catch((err)=>{
                 throw new Error(err);
             })

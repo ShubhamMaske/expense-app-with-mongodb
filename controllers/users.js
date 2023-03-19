@@ -30,8 +30,8 @@ exports.addUser = async (req, res, next)=> {
     }
 }
 
-function generateAccessToken(id){
-    return jwt.sign({userId : id},'8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb');
+function generateAccessToken(id,name,ispremiumuser){
+    return jwt.sign({userId : id, name:name,ispremiumuser},'8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb');
 }
 
 //----------------  for Sign In    -----------------
@@ -52,7 +52,7 @@ exports.checkUser = async(req, res, next) =>{
                     throw new Error("Something went wrong");
                 }
                 if(result === true){
-                    res.status(201).json({success:true, message: "User login Sucessful",token: generateAccessToken(user[0].id)});  
+                    res.status(201).json({success:true, message: "User login Sucessful",token: generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser)});  
                 }
                 else{
                     return res.status(401).json({success:false, message: "User not authorized"}) 
