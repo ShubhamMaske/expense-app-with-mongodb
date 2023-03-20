@@ -164,7 +164,11 @@
 
             btn.onclick =()=>{
                 const id = btn.id;
-                axios.post(`http://localhost:3000/expense/deleteExpense/${id}`)
+                let obj = {
+                    amount:Obj.amount
+                };
+                const token = localStorage.getItem('token');
+                axios.post(`http://localhost:3000/expense/deleteExpense/${id}`,obj,{headers: {"Authorization":token} })
                 .then(()=>{
                     parentEle.removeChild(childEle);
                 })

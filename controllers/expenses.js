@@ -1,6 +1,7 @@
 const { Console } = require('console');
 const Expense = require('../models/expense');
 const User = require('../models/users');
+const sequelize = require('../utils/database');
 
 exports.getExpenses = async(req, res, next) => {
     const data = await Expense.findAll({where : {userId: req.user.id}});
@@ -8,40 +9,51 @@ exports.getExpenses = async(req, res, next) => {
 }
 
 exports.addExpense = async(req, res, next) => {
-
+    const t = await sequelize.transaction();
     try{
         console.log(req.body);
         const amount = req.body.exAmt;
         const description = req.body.Des;
         const category = req.body.cat;
 
-        const data = await Expense.create({
-            amount: amount,
-            description: description,
-            category: category,
-            userId: req.user.id
-        })
+        const data = await Expense.create({amount,description,category,userId: req.user.id},{transaction: t});
         const totalExpense = +req.user.totalExpense + +amount;
-        User.update({
+        await User.update({
                 totalExpense: totalExpense
             },
             {
-            where:{id:req.user.id}
+            where:{id:req.user.id},
+            transaction:t
             })
         
-        console.log("after creating-->"+JSON.stringify(data));
+        await t.commit();
         res.status(201).json({newExpense: data});
     }
     catch(err){
-        res.status(500).json({
-            error: err
-        })
+        await t.rollback();
+        res.status(500).json({error: err})
     }
 }
 
 exports.deleteExpense = async(req, res, next) => {
-    const expenseId = req.params.id;
-    await Expense.destroy({where:{id:expenseId}});
-    res.sendStatus(200);
+    const t = await sequelize.transaction();
+    try{
+        const expenseId = req.params.id;
+        await Expense.destroy({where:{id:expenseId, userId:req.user.id},transaction:t});
+        const updatedExpense = +req.user.totalExpense - +req.body.amount
+        await User.update({
+            totalExpense: updatedExpense
+        },
+        {
+            where:{id:req.user.id},
+            transaction:t
+        })
+        await t.commit();
+        res.sendStatus(200);
+    }
+    catch(err){
+        await t.rollback();
+        res.status(500).json({error: err})
+    }
 
 }
