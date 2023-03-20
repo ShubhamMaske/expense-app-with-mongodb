@@ -69,7 +69,7 @@
                 leaderboardEle.innerHTML += '<h2> - Expense Leader Board -</h2>'
 
                 userLeaderboardArray.data.forEach((userdetails) => {
-                    leaderboardEle.innerHTML += `<li>Name : ${userdetails.name} Total Expense : ${userdetails.total_cost || 0}`
+                    leaderboardEle.innerHTML += `<li>Name : ${userdetails.name} Total Expense : ${userdetails.totalExpense || 0}`
                 })
             }
             document.getElementById('premiumuser').appendChild(inputEle);

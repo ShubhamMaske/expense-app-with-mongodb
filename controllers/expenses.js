@@ -1,5 +1,6 @@
 const { Console } = require('console');
 const Expense = require('../models/expense');
+const User = require('../models/users');
 
 exports.getExpenses = async(req, res, next) => {
     const data = await Expense.findAll({where : {userId: req.user.id}});
@@ -20,6 +21,14 @@ exports.addExpense = async(req, res, next) => {
             category: category,
             userId: req.user.id
         })
+        const totalExpense = +req.user.totalExpense + +amount;
+        User.update({
+                totalExpense: totalExpense
+            },
+            {
+            where:{id:req.user.id}
+            })
+        
         console.log("after creating-->"+JSON.stringify(data));
         res.status(201).json({newExpense: data});
     }
