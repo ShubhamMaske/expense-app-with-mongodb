@@ -6,14 +6,14 @@
 body{
     height: 100vh;
     padding-top: 20px;
-    background-color: azure;
+    background-color:  deepskyblue;
 }
 
 .container{
     width: 350px;
     margin:8px auto;
     padding: 10px;
-    background-color:antiquewhite;
+    background-color:rgb(196, 211, 219);
     border-radius: 20px;
     box-shadow:0 0 17px rgb(25,24,23);
 }
@@ -22,6 +22,9 @@ body{
     text-align: center;
     padding-top: 30px;
     padding-bottom: 10px;
+}
+p{
+    text-align: center;
 }
 .heading h1{
     font-size: 40px;
@@ -45,7 +48,7 @@ form input,button{
 }
 
 form button{
-    width:100px;
+    width:fit-content;
     background-color: #337af4;
     letter-spacing: 1px;
     font-weight: bold;
