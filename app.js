@@ -13,6 +13,7 @@ const forgotPasswordRoute = require('./routes/forgotPasswordroute');
 const User = require('./models/users');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
+const Forgotpassword = require('./models/forgotpassword');
 
 const db = require('./utils/database');
 require('dotenv').config();
@@ -34,6 +35,10 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
+
 
 db.sync()
     .then(result => {
