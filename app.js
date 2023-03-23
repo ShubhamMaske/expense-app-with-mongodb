@@ -14,6 +14,7 @@ const User = require('./models/users');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const Forgotpassword = require('./models/forgotpassword');
+const DownloadFile = require('./models/downloadFiles');
 
 const db = require('./utils/database');
 require('dotenv').config();
@@ -38,6 +39,9 @@ Order.belongsTo(User);
 
 User.hasMany(Forgotpassword);
 Forgotpassword.belongsTo(User);
+
+User.hasMany(DownloadFile);
+DownloadFile.belongsTo(User);
 
 
 db.sync()

@@ -38,10 +38,12 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <p id="premiumuser"></p>
 
+    <button class="btn" id="downloadexpense" style="display:none">Download Expenses</button>
+
     <h2>Your Expenses :</h2>
     <ul id="addExpense"></ul>
-
-
+    <h3 id="history" style="display:none">Your Downloaded History:</h3>
+    <ul id="fileHistory"></ul>
     <ul id="leaderboard"></ul>
     </div>
 
@@ -55,9 +57,34 @@
         var form = document.getElementById('my-form');
         form.addEventListener('submit',addLocal);
 
+        var downloadExpense = document.getElementById('downloadexpense');
+        downloadExpense.addEventListener('click',downloadExpenses);
+
+        async function downloadExpenses(e){
+            try{
+                e.preventDefault();
+                const token = localStorage.getItem('token');
+                const result = await axios.get("http://localhost:3000/expense/download",{headers: {"Authorization":token} });
+                console.log("url --",result.data.fileUrl);
+                if(result.status === 200){
+                    var a = document.createElement("a");
+                    a.href = result.data.fileUrl;
+                    a.download = 'myexpense.csv'
+                    a.click();
+
+                }
+
+            }
+            catch(err){
+                console.log("download error --> ",err);
+            }
+
+        }
+
         function showLeaderboard(){
             const inputEle = document.createElement('input');
             inputEle.type = 'button';
+            inputEle.className = 'btn';
             inputEle.value = 'Show Leaderboard';
             inputEle.onclick = async()=> {
                 const token = localStorage.getItem('token')
@@ -78,6 +105,8 @@
         function showpremiumusermessage(){
             document.getElementById('premiumuser').innerHTML = 'You are Premium user now';
             document.getElementById('premiumbtn').style.display = 'none';
+            document.getElementById('downloadexpense').style.display = 'block';
+            document.getElementById('history').style.display = 'contents';
             
         }
 
@@ -105,6 +134,15 @@
             const expense =await axios.get("http://localhost:3000/expense/getExpenses",{headers: {"Authorization":token} })
             for(var i = 0;i<expense.data.allExpense.length;i++){
                 showData(expense.data.allExpense[i]);
+            }
+            if(ispremiumuser){
+                const DownloadHistory = await axios.get("http://localhost:3000/expense/getDownloadHistory",{headers: {"Authorization":token} })
+                console.log("url return --",DownloadHistory.data.AllHistory[0].createdAt);
+                console.log("url return --",DownloadHistory.data.AllHistory[1].createdAt);
+                
+                DownloadHistory.data.AllHistory.forEach((data)=>{
+                    showFileDownloadHistory(data);
+                })
             }
             }
             catch(err){
@@ -194,6 +232,20 @@
             childEle.appendChild(btn);
             // childEle.appendChild(editbtn);
 
+        }
+
+        function showFileDownloadHistory(data){
+            const parentEle = document.getElementById('fileHistory');
+            const childEle = document.createElement('li');
+            console.log("child element created");
+
+            const urlchild = document.createElement('a');
+            urlchild.innerHTML = 'Click here to get file';
+            urlchild.href = data.url
+
+            childEle.textContent = data.createdAt + ' -- ';
+            parentEle.appendChild(childEle);
+            childEle.appendChild(urlchild);
         }
     </script>
 

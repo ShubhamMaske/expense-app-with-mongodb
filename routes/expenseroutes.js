@@ -7,6 +7,8 @@ const router = express.Router();
 router.get('/getExpenses',userAuth.authenticate,expenseController.getExpenses);
 router.post('/addExpense',userAuth.authenticate,expenseController.addExpense);
 router.post('/deleteExpense/:id',userAuth.authenticate,expenseController.deleteExpense);
+router.get('/download',userAuth.authenticate,expenseController.downloadExpense);
+router.get('/getDownloadHistory',userAuth.authenticate,expenseController.getDownloadhistory);
 
 
 

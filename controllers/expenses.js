@@ -2,10 +2,22 @@ const { Console } = require('console');
 const Expense = require('../models/expense');
 const User = require('../models/users');
 const sequelize = require('../utils/database');
+const { resolve } = require('path');
+const { rejects } = require('assert');
+const UserServices = require('../services/userservices');
+const S3services = require('../services/S3services');
+const SaveUrlInDatabase = require('../services/downloadservices');
+const { json } = require('body-parser');
 
 exports.getExpenses = async(req, res, next) => {
     const data = await Expense.findAll({where : {userId: req.user.id}});
     res.status(200).json({allExpense: data});
+}
+
+exports.getDownloadhistory = async(req, res) => {
+    const data = await SaveUrlInDatabase.getUrlFromDatabase(req);
+    console.log(JSON.stringify(data));
+    res.status(200).json({AllHistory:data});
 }
 
 exports.addExpense = async(req, res, next) => {
@@ -56,4 +68,25 @@ exports.deleteExpense = async(req, res, next) => {
         res.status(500).json({error: err})
     }
 
+}
+
+
+
+exports.downloadExpense = async(req, res)=> {
+    try{
+    const expenses = await UserServices.getExpenses(req);
+    // console.log("Expenses --<>",expenses);
+    const strigifiedExpenses = JSON.stringify(expenses);
+
+    const userid = req.user.id;
+    const fileName = `expense${userid}/${new Date()}.txt`;
+    const fileUrl = await S3services.uploadToS3(strigifiedExpenses,fileName);
+    const saveUrl = SaveUrlInDatabase.saveIndatabase(req,fileUrl);
+    console.log("file url --- ",fileUrl);
+    res.status(200).json({fileUrl, success:true});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({fileUrl: '', success:false,err:err})
+    }
 }
