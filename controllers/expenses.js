@@ -9,10 +9,6 @@ const S3services = require('../services/S3services');
 const SaveUrlInDatabase = require('../services/downloadservices');
 const { json } = require('body-parser');
 
-// exports.getExpenses = async(req, res, next) => {
-//     const data = await Expense.findAll({where : {userId: req.user.id}});
-//     res.status(200).json({allExpense: data});
-// }
 
 exports.getExpenses = async(req, res,next) => {
     try{
