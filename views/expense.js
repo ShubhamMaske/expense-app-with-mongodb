@@ -6,7 +6,14 @@ form.addEventListener('submit', addLocal);
 var downloadExpense = document.getElementById('downloadexpense');
 downloadExpense.addEventListener('click', downloadExpenses);
 var pagination = document.getElementById('pagination');
+const seletepage = document.getElementById('pagerow');
+seletepage.addEventListener('change',addpagerow);
 
+async function addpagerow(e){
+    e.preventDefault();
+    var value = document.getElementById('pagerow').value;
+    localStorage.setItem('pagerow',value);
+}
 async function downloadExpenses(e) {
     try {
         e.preventDefault();
@@ -70,6 +77,7 @@ function parseJwt(token) {
 window.addEventListener("DOMContentLoaded", async () => {
     try {
         const token = localStorage.getItem('token');
+        const pagerow = localStorage.getItem('pagerow');
         const decodeToken = parseJwt(token);
         var page = 1;
         const ispremiumuser = decodeToken.ispremiumuser;
@@ -78,7 +86,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             showpremiumusermessage();
             showLeaderboard();
         }
-        const expense = await axios.get(`http://localhost:3000/expense/getExpenses/${page}`, { headers: { "Authorization": token } })
+        const expense = await axios.get(`http://localhost:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
         for (var i = 0; i < expense.data.expenses.length; i++) {
             showData(expense.data.expenses[i]);
         }
@@ -154,7 +162,8 @@ function showPagination({
 async function getExpenses(page) {
     try {
         const token = localStorage.getItem('token');
-        const result = await axios.get(`http://localhost:3000/expense/getExpenses/${page}`, { headers: { "Authorization": token } })
+        const pagerow = localStorage.getItem('pagerow');
+        const result = await axios.get(`http://localhost:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
         for (var i = 0; i < result.data.expenses.length; i++) {
             showData(result.data.expenses[i]);
         }

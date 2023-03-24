@@ -43,7 +43,16 @@
 
         <button class="btn" id="downloadexpense" style="display:none">Download Expenses</button>
 
-        <h2>Your Expenses :</h2>
+        <h2 style="display: inline;">Your Expenses :</h2>
+        <label for="pagerow">Rows per page:</label>
+                    <select name="pagerow" id="pagerow">
+                        <option value="0" selected>1</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+        <br>
         <ul id="addExpense"></ul>
         <div id="pagination"> </div>
         <br>
