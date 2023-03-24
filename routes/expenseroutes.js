@@ -4,7 +4,7 @@ const userAuth = require('../middleware/Authorization');
 
 const router = express.Router();
 
-router.get('/getExpenses',userAuth.authenticate,expenseController.getExpenses);
+router.get('/getExpenses/:page',userAuth.authenticate,expenseController.getExpenses);
 router.post('/addExpense',userAuth.authenticate,expenseController.addExpense);
 router.post('/deleteExpense/:id',userAuth.authenticate,expenseController.deleteExpense);
 router.get('/download',userAuth.authenticate,expenseController.downloadExpense);

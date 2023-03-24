@@ -9,9 +9,37 @@ const S3services = require('../services/S3services');
 const SaveUrlInDatabase = require('../services/downloadservices');
 const { json } = require('body-parser');
 
-exports.getExpenses = async(req, res, next) => {
-    const data = await Expense.findAll({where : {userId: req.user.id}});
-    res.status(200).json({allExpense: data});
+// exports.getExpenses = async(req, res, next) => {
+//     const data = await Expense.findAll({where : {userId: req.user.id}});
+//     res.status(200).json({allExpense: data});
+// }
+
+const EXPENSE_PER_PAGE = 5;
+exports.getExpenses = async(req, res,next) => {
+    try{
+        const page = +req.params.page || 1;
+        
+        const totalexpense = await Expense.count();
+
+        const allExpenses = await Expense.findAll({
+            offset: (page - 1) * 5,
+            limit: 5
+        });
+        console.log(`page no ${page} --`,allExpenses);
+        res.status(200).json({
+            expenses : allExpenses,
+            currentPage: page,
+            hasNextPage: EXPENSE_PER_PAGE * page < totalexpense,
+            nextPage: page + 1,
+            hasPreviousPage: page-1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalexpense / EXPENSE_PER_PAGE)
+        })
+    }
+    catch(err){
+        console.log("controller err == ",err);
+    }
+
 }
 
 exports.getDownloadhistory = async(req, res) => {
