@@ -14,7 +14,6 @@ exports.getExpenses = async(req, res,next) => {
     try{
         const page = +req.params.page || 1;
         const pagerow = +req.params.pagerow
-        console.log("***************",pagerow);
         const totalexpense = await Expense.count();
 
         const allExpenses = await Expense.findAll({
@@ -40,7 +39,6 @@ exports.getExpenses = async(req, res,next) => {
 
 exports.getDownloadhistory = async(req, res) => {
     const data = await SaveUrlInDatabase.getUrlFromDatabase(req);
-    console.log(JSON.stringify(data));
     res.status(200).json({AllHistory:data});
 }
 
@@ -106,7 +104,6 @@ exports.downloadExpense = async(req, res)=> {
     const fileName = `expense${userid}/${new Date()}.txt`;
     const fileUrl = await S3services.uploadToS3(strigifiedExpenses,fileName);
     const saveUrl = SaveUrlInDatabase.saveIndatabase(req,fileUrl);
-    console.log("file url --- ",fileUrl);
     res.status(200).json({fileUrl, success:true});
     }
     catch(err){

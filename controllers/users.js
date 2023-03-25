@@ -20,7 +20,6 @@ exports.addUser = async (req, res, next)=> {
 
         bcrypt.hash(password,10,async(err,hash) => {
             const data = await User.create({name,email,password:hash})
-            console.log("after creating-->"+JSON.stringify(data));
             res.status(201).json({newUser: data});
         })
         
@@ -31,7 +30,7 @@ exports.addUser = async (req, res, next)=> {
 }
 
 function generateAccessToken(id,name,ispremiumuser){
-    return jwt.sign({userId : id, name:name,ispremiumuser},'8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb');
+    return jwt.sign({userId : id, name:name,ispremiumuser},process.env.TOKEN_PRIVATE_KEY);
 }
 
 //----------------  for Sign In    -----------------
@@ -41,11 +40,8 @@ exports.checkUser = async(req, res, next) =>{
         if(isStringinValid(email) || isStringinValid(password)){
             res.status(400).json({message: " Bad Parameters", success:false})
         }
-        console.log(password);
         let user = await User.findAll({where: {email}})
-        //console.log(result);
-        console.log(user[0]);
-        console.log(user[0].password);
+        
         if(user.length > 0){
             bcrypt.compare(password,user[0].password, (err, result)=>{
                 if(err){

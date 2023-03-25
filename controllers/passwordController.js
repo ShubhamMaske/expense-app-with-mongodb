@@ -9,7 +9,6 @@ const Forgotpassword = require('../models/forgotpassword');
 exports.forgotPassword = async (req, res, next) => {
     try {
         const Email = req.body.email;
-        console.log("Your email is >>>> ", Email);
         const user = await User.findOne({ where: { email: Email } });
 
         if (user) {

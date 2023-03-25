@@ -1,8 +1,11 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
-
 const bodyParser = require('body-parser');
-
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const userRoutes = require('./routes/userroutes');
 const expenseRoute = require('./routes/expenseroutes');
@@ -23,7 +26,15 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, 'access.log'), 
+    {flags : 'a'}
+    );
+
 app.use(bodyParser.json({ extended: false }));
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', {stream : accessLogStream}))
 
 app.use('/user', userRoutes);
 app.use('/expense',expenseRoute);

@@ -31,7 +31,7 @@ exports.purchasepremium = async (req, res) => {
 }
 
 function updateToken(id,name,ispremiumuser){
-    return jwt.sign({userId : id, name:name,ispremiumuser},'8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb');
+    return jwt.sign({userId : id, name:name,ispremiumuser},process.env.TOKEN_PRIVATE_KEY);
 }
 
 exports.updateTransactionStatus = async (req, res) => {
