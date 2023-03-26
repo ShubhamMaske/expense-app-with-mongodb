@@ -1,25 +1,42 @@
 body{
-    background-color:powderblue;
+    background-image: url('backimage.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: cover;
+    font-size: 18px;
 }
 
 .container{
     margin-top: 20px;
-    
-    
+    height: 100%;
+    box-shadow: 10px 10px 25px 10px #a59696;
 }
 .my-form{
     height: 120px;
     padding-top: 20px;
     background-color: aliceblue;
+    border-radius: 10px;
+}
+
+.my-form button{
+    align-items: center;
 }
 
 .btn{
     border: 1px solid black;
-    border-radius: 4px;
+    border-radius: 10px;
     background-color: aqua;
     color: black;
-    margin: 10px 10px;
-    
+    margin: 10px 0px 0px 2px;
+      
+}
+
+.btn1{
+    border: 1px solid black;
+    border-radius: 50px;
+    background-color: rgb(122, 148, 215);
+    color: black;
+    margin: 10px 0px 0px 4px;
 }
 .btn:hover{
     background-color: blueviolet;
@@ -28,7 +45,8 @@ body{
 
 .container ul{
     margin-top: 10px;
-    background-color: aliceblue;  
+    background-color: rgb(234, 246, 208);
+    border-radius: 10px;  
 }
 
 .container ul li{
@@ -38,4 +56,25 @@ body{
 
 .container ul li button{
     margin-left: 10px;
+}
+
+@media only screen and (max-width: 650px){
+    
+    .my-form{
+        height: 300px;
+        font-size: 20px;
+    }
+    .btn{
+        margin-top: 12px;
+        width: 300px;
+        align-items: center;
+    }
+}
+
+
+@media (min-width: 650px) and (max-width: 1400px){
+    .my-form{
+        height: 160px;
+        
+    }
 }

@@ -16,10 +16,13 @@ exports.getExpenses = async(req, res,next) => {
         const pagerow = +req.params.pagerow
         const totalexpense = await Expense.count();
 
-        const allExpenses = await Expense.findAll({
+        const allExpenses = await Expense.findAll({where: 
+            {userId : req.user.id,
+            }},
+            {
             offset: (page - 1) * pagerow,
-            limit: pagerow
-        });
+            limit: pagerow}
+            );
         //console.log(`page no ${page} --`,allExpenses);
         res.status(200).json({
             expenses : allExpenses,

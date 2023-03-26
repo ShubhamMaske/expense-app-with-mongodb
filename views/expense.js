@@ -47,7 +47,7 @@ function showLeaderboard() {
 
         var leaderboardEle = document.getElementById('leaderboard')
 
-        leaderboardEle.innerHTML += '<h2> - Expense Leader Board -</h2>'
+        leaderboardEle.innerHTML += '<h2 style="text-align: center"> - Expense Leader Board -</h2>'
 
         userLeaderboardArray.data.forEach((userdetails) => {
             leaderboardEle.innerHTML += `<li>Name : ${userdetails.name} Total Expense : ${userdetails.totalExpense || 0}`
@@ -119,7 +119,7 @@ function showPagination({
     pagination.innerHTML = '';
     if (hasPreviousPage) {
         const btn2 = document.createElement('button');
-        btn2.className = 'btn';
+        btn2.className = 'btn1';
         btn2.innerHTML = previousPage;
         btn2.addEventListener('click', () => {
             const collection = document.getElementById('addExpense').children;
@@ -132,7 +132,7 @@ function showPagination({
     }
 
     const btn1 = document.createElement('button');
-    btn1.className = 'btn';
+    btn1.className = 'btn1';
     btn1.innerHTML = `<h5> ${currentPage} </h5>`;
     btn1.addEventListener('click', () => {
         const collection = document.getElementById('addExpense').children;
@@ -145,7 +145,7 @@ function showPagination({
 
     if (hasNextPage) {
         const btn3 = document.createElement('button');
-        btn3.className = 'btn';
+        btn3.className = 'btn1';
         btn3.innerHTML = nextPage;
         btn3.addEventListener('click', () => {
             const collection = document.getElementById('addExpense').children;
