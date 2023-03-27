@@ -18,7 +18,7 @@ async function downloadExpenses(e) {
     try {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        const result = await axios.get("http://localhost:3000/expense/download", { headers: { "Authorization": token } });
+        const result = await axios.get("http://3.110.178.148:3000/expense/download", { headers: { "Authorization": token } });
         console.log("url --", result.data.fileUrl);
         if (result.status === 200) {
             var a = document.createElement("a");
@@ -42,7 +42,7 @@ function showLeaderboard() {
     inputEle.value = 'Show Leaderboard';
     inputEle.onclick = async () => {
         const token = localStorage.getItem('token')
-        const userLeaderboardArray = await axios.get("http://localhost:3000/premium/showLeaderBoard", { headers: { "Authorization": token } })
+        const userLeaderboardArray = await axios.get("http://3.110.178.148:3000/premium/showLeaderBoard", { headers: { "Authorization": token } })
         console.log(userLeaderboardArray);
 
         var leaderboardEle = document.getElementById('leaderboard')
@@ -86,14 +86,14 @@ window.addEventListener("DOMContentLoaded", async () => {
             showpremiumusermessage();
             showLeaderboard();
         }
-        const expense = await axios.get(`http://localhost:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
+        const expense = await axios.get(`http://3.110.178.148:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
         for (var i = 0; i < expense.data.expenses.length; i++) {
             showData(expense.data.expenses[i]);
         }
         showPagination(expense.data);
         
         if (ispremiumuser) {
-            const DownloadHistory = await axios.get("http://localhost:3000/expense/getDownloadHistory", { headers: { "Authorization": token } })
+            const DownloadHistory = await axios.get("http://3.110.178.148:3000/expense/getDownloadHistory", { headers: { "Authorization": token } })
             console.log("url return --", DownloadHistory.data.AllHistory[0].createdAt);
             console.log("url return --", DownloadHistory.data.AllHistory[1].createdAt);
 
@@ -163,7 +163,7 @@ async function getExpenses(page) {
     try {
         const token = localStorage.getItem('token');
         const pagerow = localStorage.getItem('pagerow');
-        const result = await axios.get(`http://localhost:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
+        const result = await axios.get(`http://3.110.178.148:3000/expense/getExpenses/${page}/${pagerow}`, { headers: { "Authorization": token } })
         for (var i = 0; i < result.data.expenses.length; i++) {
             showData(result.data.expenses[i]);
         }
@@ -192,7 +192,7 @@ async function addLocal(e) {
             cat: category
         };
         const token = localStorage.getItem('token');
-        const resp = await axios.post("http://localhost:3000/expense/addExpense", myObj, { headers: { "Authorization": token } })
+        const resp = await axios.post("http://3.110.178.148:3000/expense/addExpense", myObj, { headers: { "Authorization": token } })
         showData(resp.data.newExpense);
     }
     catch (err) {
@@ -224,7 +224,7 @@ function showData(Obj) {
                 amount: Obj.amount
             };
             const token = localStorage.getItem('token');
-            axios.post(`http://localhost:3000/expense/deleteExpense/${id}`, obj, { headers: { "Authorization": token } })
+            axios.post(`http://3.110.178.148:3000/expense/deleteExpense/${id}`, obj, { headers: { "Authorization": token } })
                 .then(() => {
                     parentEle.removeChild(childEle);
                 })

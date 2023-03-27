@@ -42,6 +42,11 @@ app.use('/purchase',membershipRoute);
 app.use('/premium',premiumfeatureRoute);
 app.use('/password',forgotPasswordRoute);
 
+app.use((req,res) => {
+    console.log("url -> ",req.url);
+    res.sendFile(path.join(__dirname,`views/${req.url}`));
+})
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
 

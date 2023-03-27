@@ -6,7 +6,7 @@ document.getElementById('premiumbtn').onclick = async function(e) {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/purchase/premiummembership',{headers: {"Authorization":token} })
+    const response = await axios.get('http://3.110.178.148:3000/purchase/premiummembership',{headers: {"Authorization":token} })
     console.log("after premiummembership >>>",response);
     
                                                                                 
@@ -16,7 +16,7 @@ document.getElementById('premiumbtn').onclick = async function(e) {
         "order_id": response.data.order.id, //for one time payment
         "handler": async function (response){
             console.log("response>>>",response)
-            const updatedUser = await axios.post("http://localhost:3000/purchase/updatestatus",{
+            const updatedUser = await axios.post("http://3.110.178.148:3000/purchase/updatestatus",{
             order_id: options.order_id,
             payment_id: response.razorpay_payment_id
         },{headers: {"Authorization":token} })
