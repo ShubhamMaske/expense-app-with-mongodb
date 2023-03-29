@@ -25,6 +25,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'views')));
 
 const accessLogStream = fs.createWriteStream(
     path.join(__dirname, 'access.log'), 
