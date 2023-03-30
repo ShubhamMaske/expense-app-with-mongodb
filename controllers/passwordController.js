@@ -42,7 +42,7 @@ exports.forgotPassword = async (req, res, next) => {
         `,
                     htmlContent: `
                     <h1>Click on the below link to reset the password</h1>
-                    <a href = "http://localhost:3000/password/resetpassword/${id}">Reset Password</a>
+                    <a href = "http://3.110.178.148:3000/password/resetpassword/${id}">Reset Password</a>
                     `
                 })
                 .then((result) => {
