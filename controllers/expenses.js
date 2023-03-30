@@ -13,17 +13,17 @@ const { json } = require('body-parser');
 exports.getExpenses = async(req, res,next) => {
     try{
         const page = +req.params.page || 1;
-        const pagerow = +req.params.pagerow
-        const totalexpense = await Expense.count();
+        const pagerow = +req.params.pagerow;
+        const totalexpense = await Expense.count({where: 
+            {userId : req.user.id},
+            });
+    
+        const allExpenses = await Expense.findAll({
+            limit: [pagerow],
+            offset:((page - 1) * pagerow),  
+            where: {userId : req.user.id},      
+        });
 
-        const allExpenses = await Expense.findAll({where: 
-            {userId : req.user.id,
-            }},
-            {
-            offset: (page - 1) * pagerow,
-            limit: pagerow}
-            );
-        //console.log(`page no ${page} --`,allExpenses);
         res.status(200).json({
             expenses : allExpenses,
             currentPage: page,
@@ -41,8 +41,13 @@ exports.getExpenses = async(req, res,next) => {
 }
 
 exports.getDownloadhistory = async(req, res) => {
-    const data = await SaveUrlInDatabase.getUrlFromDatabase(req);
-    res.status(200).json({AllHistory:data});
+    try{
+        const data = await SaveUrlInDatabase.getUrlFromDatabase(req);
+        res.status(200).json({AllHistory:data});
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 
 exports.addExpense = async(req, res, next) => {

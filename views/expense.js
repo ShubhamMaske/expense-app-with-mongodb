@@ -6,13 +6,11 @@ form.addEventListener('submit', addLocal);
 var downloadExpense = document.getElementById('downloadexpense');
 downloadExpense.addEventListener('click', downloadExpenses);
 var pagination = document.getElementById('pagination');
-const seletepage = document.getElementById('pagerow');
-seletepage.addEventListener('change',addpagerow);
-//some change
-async function addpagerow(e){
-    e.preventDefault();
+
+async function addpagerow(){
     var value = document.getElementById('pagerow').value;
     localStorage.setItem('pagerow',value);
+    console.log("value === ",value)
 }
 async function downloadExpenses(e) {
     try {
@@ -78,6 +76,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     try {
         const token = localStorage.getItem('token');
         const pagerow = localStorage.getItem('pagerow');
+        document.getElementById('pagerow').value = pagerow;
         const decodeToken = parseJwt(token);
         var page = 1;
         const ispremiumuser = decodeToken.ispremiumuser;
@@ -207,14 +206,12 @@ function showData(Obj) {
         const parentEle = document.getElementById('addExpense');
         const childEle = document.createElement('li');
         childEle.setAttribute('id', Obj.id);
-        console.log("child element created");
 
         const btn = document.createElement('input');
         btn.type = "button"
         btn.className = 'deleteB';
         btn.value = "Delete Expense";
         btn.setAttribute('id', Obj.id);
-        console.log("delete button created");
 
         childEle.textContent = Obj.amount + ' - ' + Obj.description + ' - ' + Obj.category;
 
