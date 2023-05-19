@@ -17,9 +17,19 @@ exports.addUser = async (req, res, next)=> {
         const name = req.body.name;
         const email = req.body.email;
         const password = req.body.password;
-
+        console.log(name);
+        
         bcrypt.hash(password,10,async(err,hash) => {
-            const data = await User.create({name,email,password:hash})
+            const user = new User({
+                name: name,
+                email: email,
+                password: hash,
+                ispremiumuser: false,
+                totalExpense: 0
+            })
+
+            const data = await user.save();
+            console.log(data);
             res.status(201).json({newUser: data});
         })
         
@@ -40,15 +50,15 @@ exports.checkUser = async(req, res, next) =>{
         if(isStringinValid(email) || isStringinValid(password)){
             res.status(400).json({message: " Bad Parameters", success:false})
         }
-        let user = await User.findAll({where: {email}})
-        
-        if(user.length > 0){
-            bcrypt.compare(password,user[0].password, (err, result)=>{
+        let user = await User.findOne({email: email})
+        console.log("=>",user);
+        if(user){
+            bcrypt.compare(password,user.password, (err, result)=>{
                 if(err){
                     throw new Error("Something went wrong");
                 }
                 if(result === true){
-                    res.status(201).json({success:true, message: "User login Sucessful",token: generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser)});  
+                    res.status(201).json({success:true, message: "User login Sucessful",token: generateAccessToken(user._id,user.name,user.ispremiumuser)});  
                 }
                 else{
                     return res.status(401).json({success:false, message: "User not authorized"}) 

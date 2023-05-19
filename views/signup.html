@@ -63,7 +63,7 @@
                     password: Password
                 };
 
-                const result = await axios.post("http://3.110.178.148:3000/user/addUser",myObj);
+                const result = await axios.post("http://localhost:3000/user/addUser",myObj);
                 console.log(result.data);
                 window.location.href = "./signin.html";
 

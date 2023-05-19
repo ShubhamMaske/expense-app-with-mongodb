@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -13,11 +14,6 @@ const membershipRoute = require('./routes/purchase');
 const premiumfeatureRoute = require('./routes/premiumFeature');
 const forgotPasswordRoute = require('./routes/forgotPasswordroute');
 
-const User = require('./models/users');
-const Expense = require('./models/expense');
-const Order = require('./models/order');
-const Forgotpassword = require('./models/forgotpassword');
-const DownloadFile = require('./models/downloadFiles');
 
 const db = require('./utils/database');
 require('dotenv').config();
@@ -48,29 +44,13 @@ app.use((req,res) => {
     res.sendFile(path.join(__dirname,`views/${req.url}`));
 })
 
-User.hasMany(Expense);
-Expense.belongsTo(User);
 
-User.hasMany(Order);
-Order.belongsTo(User);
-
-User.hasMany(Forgotpassword);
-Forgotpassword.belongsTo(User);
-
-User.hasMany(DownloadFile);
-DownloadFile.belongsTo(User);
-
-
-db.sync()
+mongoose
+    .connect('mongodb+srv://shubhammaske099:Shubham099@expensedatabase.uds96i9.mongodb.net/expense?retryWrites=true&w=majority')
     .then(result => {
-        //console.log(result);
-        app.listen(3000);
+        console.log('Connected...');
+        app.listen(3000)
     })
     .catch(err => {
         console.log(err);
     })
-
-
-
-
-

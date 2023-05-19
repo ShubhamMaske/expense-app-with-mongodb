@@ -14,9 +14,17 @@ exports.purchasepremium = async (req, res) => {
 
         rzp.orders.create({amount, currency: "INR"},(err, order) => {
             if(err){
+                console.log("--> error ",err);
                 throw new Error(JSON.stringify(err));
             }
-            req.user.createOrder({orderid:order.id, status:'PENDING'}).then(() => {
+            const orderCreated = new Order({
+                orderid:order.id,
+                status: 'PENDING',
+                userId: req.user._id
+            })
+//req.user.createOrder({orderid:order.id, status:'PENDING',userId:req.user._id}).
+            orderCreated.save()
+            .then(() => {
                 return res.status(201).json({order,key_id:rzp.key_id});
             }).catch(err => {
                 throw new Error(err);
@@ -37,14 +45,14 @@ function updateToken(id,name,ispremiumuser){
 exports.updateTransactionStatus = async (req, res) => {
     try{
         const {payment_id, order_id} = req.body;
-        const order = await Order.findOne({where: {orderid : order_id}})
-        const promise1 = order.update({paymentid:payment_id, status:'SUCCESSFUL'})
-        const promise2 = req.user.update({ispremiumuser: true})
+        const order = await Order.findOne({orderid : order_id})
+        const promise1 = Order.updateOne({orderid: order_id},{paymentid:payment_id, status:'SUCCESSFUL'})
+        const promise2 = User.updateOne({_id:order.userId},{ispremiumuser: true})
 
-        let user = await User.findAll({where: {id:order.userId}})
+        let user = await User.findOne({_id:order.userId})
 
         Promise.all([promise1,promise2]).then(() => {
-            return res.status(202).json({success: true,message:"Transaction Successful",token: updateToken(user[0].id,user[0].name,user[0].ispremiumuser)});
+            return res.status(202).json({success: true,message:"Transaction Successful",token: updateToken(user._id,user.name,user.ispremiumuser)});
         }).catch((err)=>{
                 throw new Error(err);
             })

@@ -25,7 +25,6 @@ exports.uploadToS3 = (data,filename) => {
                     console.log("err ==",err);
                     reject(err);
                 }else{
-                    // console.log("Success ==", s3response);
                     console.log("resss -",s3response.Location);
                     resolve(s3response.Location);
                 }

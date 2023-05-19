@@ -9,7 +9,7 @@ document.getElementById('forgotpassword').onclick = async function(e){
             email: email
         }
 
-        const result = await axios.post("http://3.110.178.148:3000/password/forgotpassword",Obj);
+        const result = await axios.post("http://localhost:3000/password/forgotpassword",Obj);
         document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
         console.log("result--->",result)
 

@@ -1,4 +1,4 @@
-const { Console } = require('console');
+
 const Expense = require('../models/expense');
 const User = require('../models/users');
 const sequelize = require('../utils/database');
@@ -14,24 +14,27 @@ exports.getExpenses = async(req, res,next) => {
     try{
         const page = +req.params.page || 1;
         const pagerow = +req.params.pagerow;
-        const totalexpense = await Expense.count({where: 
-            {userId : req.user.id},
-            });
-    
-        const allExpenses = await Expense.findAll({
-            limit: [pagerow],
-            offset:((page - 1) * pagerow),  
-            where: {userId : req.user.id},      
-        });
+       
+        const totalExpenses = await Expense.find({userId: req.user._id}).count();
+        console.log("Total Expenses -> ", totalExpenses);
+        
 
+        const allExpenses = await User.findById(req.user._id).populate({
+            path: 'Expenses',
+            options: {
+                limit: pagerow,
+                skip: (page - 1) * pagerow
+            }
+        })
+        console.log("allExpenses -> ",allExpenses);
         res.status(200).json({
             expenses : allExpenses,
             currentPage: page,
-            hasNextPage: pagerow * page < totalexpense,
+            hasNextPage: pagerow * page < totalExpenses,
             nextPage: page + 1,
             hasPreviousPage: page-1,
             previousPage: page - 1,
-            lastPage: Math.ceil(totalexpense / pagerow)
+            lastPage: Math.ceil(totalExpenses / pagerow)
         })
     }
     catch(err){
@@ -51,50 +54,46 @@ exports.getDownloadhistory = async(req, res) => {
 }
 
 exports.addExpense = async(req, res, next) => {
-    const t = await sequelize.transaction();
     try{
         console.log(req.body);
         const amount = req.body.exAmt;
         const description = req.body.Des;
         const category = req.body.cat;
+        const expense = new Expense({
+            amount: amount,
+            description: description,
+            category: category,
+            userId: req.user._id
+        })
+        const data = await expense.save();
 
-        const data = await Expense.create({amount,description,category,userId: req.user.id},{transaction: t});
-        const totalExpense = +req.user.totalExpense + +amount;
-        await User.update({
-                totalExpense: totalExpense
-            },
-            {
-            where:{id:req.user.id},
-            transaction:t
-            })
-        
-        await t.commit();
+        const updatedExpense = +req.user.totalExpense + +amount;
+        const userdata = await User.findById(req.user._id);
+        userdata.totalExpense = updatedExpense;
+        userdata.Expenses.push(data._id);
+        await userdata.save();
+         
         res.status(201).json({newExpense: data});
     }
     catch(err){
-        await t.rollback();
         res.status(500).json({error: err})
     }
 }
 
 exports.deleteExpense = async(req, res, next) => {
-    const t = await sequelize.transaction();
     try{
         const expenseId = req.params.id;
-        await Expense.destroy({where:{id:expenseId, userId:req.user.id},transaction:t});
+        const result = await Expense.findByIdAndRemove(expenseId);
+        console.log("Expense Delete Result=> ",result);
+
         const updatedExpense = +req.user.totalExpense - +req.body.amount
-        await User.update({
-            totalExpense: updatedExpense
-        },
-        {
-            where:{id:req.user.id},
-            transaction:t
-        })
-        await t.commit();
+        const userdata = await User.findById(req.user._id);
+        userdata.totalExpense = updatedExpense;
+        await userdata.save();
+
         res.sendStatus(200);
     }
     catch(err){
-        await t.rollback();
         res.status(500).json({error: err})
     }
 
@@ -105,7 +104,7 @@ exports.deleteExpense = async(req, res, next) => {
 exports.downloadExpense = async(req, res)=> {
     try{
     const expenses = await UserServices.getExpenses(req);
-    // console.log("Expenses --<>",expenses);
+
     const strigifiedExpenses = JSON.stringify(expenses);
 
     const userid = req.user.id;

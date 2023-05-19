@@ -57,7 +57,7 @@
                     password: Password
                 }
 
-                const result = await axios.post("http://3.110.178.148:3000/user/checkUser",Obj);
+                const result = await axios.post("http://localhost:3000/user/checkUser",Obj);
                 console.log(result.data.message);
                 console.log(result.data.token);
                 localStorage.setItem('token',result.data.token);
